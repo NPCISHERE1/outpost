@@ -1,0 +1,168 @@
+/* SI DISCLOSURE: written with SI assistance (Anthropic Claude) and edited by the team. See AI-DISCLOSURE.md */
+/* The ending: full-screen pictures, the talk on the recovery ship, and the clipboard report */
+#ending {
+  --dlg-h: clamp(150px, 24vh, 168px);
+  position: fixed;
+  inset: 0;
+  z-index: 45;                 /* above the game, below the death screen */
+  overflow: hidden;
+}
+#ending:focus { outline: none; }
+.end-art {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: left top;      /* top-left stays visible: the SI watermark */
+  image-rendering: pixelated;
+}
+.end-art:not([src]) { visibility: hidden; }
+.end-fade {                    /* the black layer that fades in and out between pictures */
+  position: absolute;
+  inset: 0;
+  z-index: 8;
+  background: #000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 1s steps(10);
+}
+.end-fade.black { opacity: 1; }
+#ending .actors { z-index: 2; }
+#ending .dialog { z-index: 3; cursor: pointer; }
+
+/* ----- the clipboard ----- */
+.end-report {
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  display: grid;
+  place-items: center;
+  padding: 26px 12px 12px;
+  overflow: auto;
+  background: rgba(0, 0, 0, .55);
+  animation: fade .5s steps(5);
+}
+.clip {
+  position: relative;
+  width: min(94vw, 540px);
+  margin: auto;
+  padding: 22px 12px 12px;
+  background: #7a4a1e;
+  border: 4px solid #2a1608;
+  box-shadow: 0 0 0 4px #000, 10px 10px 0 4px rgba(0, 0, 0, .5);
+}
+.clip-metal {
+  position: absolute;
+  left: 50%;
+  top: -16px;
+  transform: translateX(-50%);
+  width: 120px;
+  height: 36px;
+  background: #b8bcc8;
+  border: 4px solid #3a3d48;
+  box-shadow: inset -5px -5px 0 #7d8190, inset 4px 4px 0 #e6e8ef;
+}
+.clip-metal i {
+  display: block;
+  width: 34px;
+  height: 10px;
+  margin: 8px auto 0;
+  background: #2a1608;
+}
+.paper {
+  --ink: #15110a;
+  padding: 16px 14px 14px;
+  color: var(--ink);
+  background: #f5efd8;
+  border: 3px solid #2a1608;
+  font-size: clamp(8px, 1.7vw, 11px);
+  line-height: 1.8;
+  text-transform: uppercase;
+  text-align: center;
+}
+.paper h2 {
+  color: var(--ink);
+  font-size: 1.5em;
+  letter-spacing: .08em;
+  border-bottom: 3px solid var(--ink);
+  padding-bottom: 8px;
+}
+.rname { margin: 8px 0 6px; color: #5a2fa0; }
+.rrows { list-style: none; margin: 0 0 10px; padding: 0; text-align: left; }
+.rrows li {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 4px 0;
+  border-bottom: 2px dashed #b9ad8a;
+}
+.rrows b { text-align: right; }
+.paper .ok { color: #0a7a2a; }
+.paper .warn { color: #a86a00; }
+.paper .bad { color: #b00020; }
+
+.reveal { opacity: 0; }
+.reveal.in { opacity: 1; animation: fade .3s steps(4); }
+
+.rg {
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+  margin: 6px 0 4px;
+}
+.rg .letter {
+  display: grid;
+  place-items: center;
+  width: 3.2em;
+  height: 3.2em;
+  font-size: 2.6em;
+  line-height: 1;
+  border: .12em solid currentColor;
+  background: #fffbea;
+  opacity: 0;                              /* slams down when the report is ready */
+}
+.end-report.stamped .rg .letter { animation: stamp .5s steps(6) forwards; }
+@keyframes stamp {
+  from { opacity: 0; transform: scale(3) rotate(-14deg); }
+  to   { opacity: 1; transform: scale(1) rotate(-5deg); }
+}
+.rg.gS { color: #c28a00; text-shadow: 3px 3px 0 #f3d36b; }
+.rg.gA { color: #12862f; }
+.rg.gB { color: #1673ad; }
+.rg.gC { color: #b87400; }
+.rg.gD { color: #b8132f; }
+.rg small { color: var(--ink); }
+.rkey { display: flex; justify-content: center; gap: 6px; margin: 4px 0 8px; }
+.rkey i {
+  font-style: normal;
+  width: 2.2em;
+  padding: 2px 0;
+  border: 2px solid #b9ad8a;
+  color: #8d8466;
+}
+.rkey i.me { color: #fff; background: var(--ink); border-color: var(--ink); }
+.rnote {
+  text-align: left;
+  padding: 8px;
+  background: #ece3c2;
+  border: 2px solid #b9ad8a;
+  text-transform: none;
+  line-height: 1.9;
+}
+.rnote b { text-transform: uppercase; color: #5a2fa0; }
+.rsrc { margin-top: 8px; font-size: .8em; color: #6d6445; }
+.paper .btn {
+  visibility: hidden;
+  margin-top: 12px;
+  width: 100%;
+  color: #fff;
+  background: #14062e;
+  border: 3px solid #000;
+}
+.end-report.stamped .paper .btn { visibility: visible; animation: fade .4s steps(4); }
+.paper .btn:hover, .paper .btn:focus { background: #5a2fa0; outline: none; }
+
+@media (max-aspect-ratio: 1 / 1) {
+  .end-art { object-position: left top; }
+}

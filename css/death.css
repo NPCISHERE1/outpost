@@ -1,0 +1,53 @@
+/* SI DISCLOSURE: written with SI assistance (Anthropic Claude) and edited by the team. See AI-DISCLOSURE.md */
+/* Death scene: a full-screen picture, Echo's bubble, then a TRY AGAIN box on black */
+#death {
+  position: fixed;
+  inset: 0;
+  z-index: 50;                 /* above every screen, so nothing underneath can be clicked */
+  background: #000;
+  display: grid;
+  place-items: center;
+}
+#death:focus { outline: none; }
+.death-stage { animation: none; }
+.death-stage .cp-art { animation: fade 1.6s steps(8); }
+
+/* Echo's bubble, centred low (same look as the other speech bubbles) */
+.dialog.death-echo {
+  left: 50%;
+  bottom: 5%;
+  transform: translateX(-50%);
+  width: min(82%, 720px);
+  min-height: 0;
+  z-index: 3;
+  cursor: pointer;
+}
+.death-echo .tail { display: none; }
+.death-echo .dtext p { min-height: 3.8em; }
+
+/* black fade + alert */
+.death-fade {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  display: grid;
+  place-items: center;
+  background: #000;
+  animation: fade 1.4s steps(10);
+}
+.death-box {
+  width: min(72%, 560px);
+  padding: 2em 1.6em;
+  text-align: center;
+  background: #14060b;
+  border: .22em solid #ff4d6d;
+  box-shadow: 0 0 0 .22em #000, 0 0 0 .44em rgba(255, 77, 109, .45);
+  display: flex;
+  flex-direction: column;
+  gap: 1.1em;
+  align-items: center;
+  animation: fade .5s steps(5);
+}
+.death-box h2 { color: #ff4d6d; font-size: 1.5em; text-shadow: 3px 3px 0 #4a0a16; }
+.death-box p { font-size: .8em; }
+.death-box .btn { margin-top: .4em; }

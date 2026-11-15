@@ -1,0 +1,209 @@
+/* SI DISCLOSURE: written with SI assistance (Anthropic Claude) and edited by the team. See AI-DISCLOSURE.md */
+/* Outpost tablet: metal frame, black pixel screen */
+.cp-art { transition: transform .35s steps(7); }
+.cp-stage.tab-up .cp-art { transform: scale(1.2) translateY(-3%); }
+
+.tab-wrap {
+  position: absolute;
+  inset: 0;
+  z-index: 8;
+  display: grid;
+  place-items: center;
+  background: rgba(5, 2, 15, .55);
+}
+.tab {
+  position: relative;
+  width: 92%;
+  width: min(84cqw, 880px);
+  font-size: 11px;
+  font-size: min(1.25cqw, 13.5px);       /* everything inside is in em */
+  line-height: 1.5;
+  color: #fff;
+  background: #aab2bf;
+  border: .3em solid #000;
+  box-shadow: inset .3em .3em 0 #dfe4ec, inset -.3em -.3em 0 #646c7a;
+  padding: 1.8em 1.8em 1.2em;
+  animation: tabup .35s steps(7);
+}
+.tab:focus { outline: none; }
+@keyframes tabup { from { transform: translateY(40%); opacity: 0; } }
+
+.tab-x {
+  position: absolute;
+  top: .4em;
+  right: .6em;
+  font: inherit;
+  font-size: .8em;
+  color: #000;
+  background: #dfe4ec;
+  border: .2em solid #000;
+  cursor: pointer;
+  padding: 0 .5em;
+}
+.tab-x:hover,
+.tab-x:focus-visible { background: var(--hi); outline: none; }
+
+/* screen */
+.tab-screen {
+  display: grid;
+  grid-template-columns: 36% 1fr;
+  background: #000;
+  border: .3em solid #20242d;
+  padding: 1.2em;
+  min-height: 34em;
+}
+.tab h4 { margin: 0 0 .6em; font-weight: 400; font-size: 1.15em; }
+.tab p { margin: 0; }
+.tab .yel { color: #ffd84a; }
+.tab .dim { color: #6b7385; }
+
+.tab-l { display: flex; flex-direction: column; gap: .9em; padding-right: 1.2em; }
+.tab-r { border-left: .2em solid #2b3140; padding-left: 1.2em; }
+.hd {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: .3em .5em;
+  margin-bottom: .3em;
+}
+.ic { font-size: 1.45em; line-height: 1; vertical-align: middle; }
+.hd em { font-style: normal; }
+
+/* bars */
+.seg {
+  display: grid;
+  grid-template-columns: repeat(20, 1fr);
+  gap: .15em;
+  padding: .25em;
+  border: .2em solid #3a4150;
+  border-radius: .4em;
+}
+.seg i { height: 1em; background: #1d2330; }
+.seg.ok i.on { background: #3ddc5a; }
+.seg.warn i.on { background: #ffd84a; }
+.seg.orange i.on { background: #ff9020; }
+.seg.bad i.on { background: #ff4d5e; }
+.fillbar {
+  height: 1.5em;
+  padding: .25em;
+  border: .2em solid #3a4150;
+  border-radius: .4em;
+}
+.fillbar i { display: block; height: 100%; background: #3ddc5a; }
+.fillbar.warn i { background: #ffd84a; }
+.fillbar.bad i { background: #ff4d5e; }
+.sq { display: flex; gap: .4em; }
+.sq i { width: 1.8em; height: 1.8em; background: #1d2a4a; }
+.sq i.on { background: #ffd84a; }
+.sq i.part {                         /* a block that is part way full */
+  background: linear-gradient(to right, #ffd84a calc(var(--f) * 100%), #1d2a4a 0);
+}
+.mini { font-size: .8em; color: #9fb4c9; }
+.log { margin: auto 0 0; padding: 0; list-style: none; font-size: .65em; color: #9fb4c9; }
+.log li { margin-top: .5em; }
+
+/* right column */
+.day { font-size: 1.4em; }
+.wx { display: flex; gap: .7em; color: #ffd84a; margin-bottom: .8em; }
+.wx span { font-size: 1.5em; line-height: 1; }
+.pow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: .5em;
+}
+.prow {
+  display: flex;
+  align-items: center;
+  gap: .8em;
+  padding: .6em 0;
+  border-top: .15em solid #2b3140;
+}
+.lbl { flex: 1; }
+.lbl b { display: block; font-weight: 400; }
+.lbl small { display: block; color: #7fb7c9; font-size: .8em; }
+.step { display: flex; align-items: center; gap: .6em; }
+.step span { min-width: 1.6em; text-align: center; font-size: 1.5em; }
+.step button {
+  width: 2.6em;
+  height: 2.6em;
+  font: inherit;
+  font-size: 1.1em;
+  color: #fff;
+  background: #4a5a72;
+  border: .2em solid #2c3748;
+  border-radius: .4em;
+  cursor: pointer;
+}
+.step button:hover:not(:disabled),
+.step button:focus-visible { background: #6a7f9d; outline: none; }
+.step button:disabled { opacity: .35; cursor: not-allowed; }
+
+
+.sum { border-top: .15em solid #2b3140; padding: .6em 0; font-size: .95em; }
+.sum p { display: flex; justify-content: space-between; margin: .3em 0; }
+.sum em { font-style: normal; font-size: 1.2em; }
+.sum s,
+.st s { text-decoration: none; color: #3a4150; }
+.sum .st,
+.tab-end .st { font-size: 1.7em; line-height: 1; letter-spacing: .05em; }
+.sum .dot { font-size: 1.8em; line-height: 1; }
+
+.fin {
+  display: block;
+  width: 100%;
+  font: inherit;
+  font-size: 1.3em;
+  color: #000;
+  background: #bfeaff;
+  border: .2em solid #5c7d96;
+  border-radius: .4em;
+  box-shadow: inset -.2em -.2em 0 #8fb7cf;
+  padding: .6em;
+  cursor: pointer;
+}
+.fin:hover,
+.fin:focus-visible { background: #fff; outline: none; }
+
+/* end screen */
+.tab-end {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1em;
+  text-align: center;
+}
+.tab-end h4 { font-size: 1.8em; }
+.endbtns { display: flex; gap: 1em; width: 80%; }
+
+/* question bar */
+.tab-dock { margin-top: 1em; }
+.tab-dock button {
+  display: block;
+  width: 100%;
+  font: inherit;
+  text-align: left;
+  color: #8fe3ff;
+  background: #000;
+  border: .3em solid #20242d;
+  padding: .7em 1em;
+  cursor: pointer;
+  text-transform: uppercase;
+}
+.tab-dock button:hover,
+.tab-dock button:focus-visible { color: #fff; outline: none; }
+
+/* narrow screens: one column */
+@container (max-width: 620px) {
+  .tab-screen { grid-template-columns: 1fr; }
+  .tab-r { border-left: 0; padding-left: 0; margin-top: 1em; }
+}
+
+/* hint where the Finish Day button used to be */
+.sleephint { margin-top: 1em; text-align: center; }
+
+/* mission failed: the whole cockpit goes dim red */
+.cp-stage.crew-lost .cp-art { filter: sepia(1) hue-rotate(-50deg) saturate(2.2) brightness(.55); }
+.tab-end.fail h4 { font-size: 1.6em; }

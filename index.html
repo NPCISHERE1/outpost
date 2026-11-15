@@ -1,0 +1,280 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Outpost Shift</title>
+<meta name="description" content="Outpost Shift: a junior astronaut mission trainer. Art and audio are SI-generated (Google Gemini). Code is SI-assisted (Anthropic Claude).">
+<meta name="generator" content="SI-assisted: Anthropic Claude">
+<meta name="si-disclosure" content="Images: SI-generated (Google Gemini), visibly watermarked. Audio: SI-generated (Google Gemini), synthesized in code. Code: SI-assisted (Anthropic Claude). See AI-DISCLOSURE.md.">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16.png">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<!--
+  SI DISCLOSURE: images and audio are SI-generated (Google Gemini); the code is SI-assisted
+  (Anthropic Claude) and edited by the team. See AI-DISCLOSURE.md.
+
+  OUTPOST SHIFT - retro start menu.
+  Edit js/config.js for sprites, logo, dialogue and the launch video.
+  Hook your game into OutpostMenu.onBegin(player) in js/main.js.
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet"
+  href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap">
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/menu.css">
+<link rel="stylesheet" href="css/title.css">
+<link rel="stylesheet" href="css/scene.css">
+<link rel="stylesheet" href="css/launch.css">
+<link rel="stylesheet" href="css/cockpit.css">
+<link rel="stylesheet" href="css/tablet.css">
+<link rel="stylesheet" href="css/rooms.css">
+<link rel="stylesheet" href="css/death.css">
+<link rel="stylesheet" href="css/ending.css">
+</head>
+<body>
+
+<!-- 1. TITLE -->
+<main class="screen" id="sTitle">
+  <canvas id="titleSky" aria-hidden="true"></canvas>
+  <img id="logoImg" class="hidden" alt="Outpost Shift">
+  <h1 id="logoText">Outpost<br>Shift</h1>
+  <p class="title-sub">Junior Astronaut<br>Mission Trainer</p>
+  <div class="menu">
+    <button class="btn" id="startBtn" type="button">Start game</button>
+  </div>
+  <p class="hint">Press enter or tap</p>
+  <p class="title-foot">NASA Space Apps Challenge 2026 &middot; Real NASA space weather data<br>
+    Art and audio: SI-generated (Google Gemini) &middot; Code: SI-assisted (Claude)</p>
+</main>
+
+<!-- 2. CHARACTER SELECT -->
+<main class="screen hidden" id="sChar">
+  <h2>Select your character</h2>
+  <div class="chars" id="charList" role="radiogroup"
+       aria-label="Select your character"></div>
+  <p class="hint">Arrows to choose &middot; enter to confirm</p>
+  <button class="btn" id="charBack" type="button">Back</button>
+</main>
+
+<!-- 3. NAME -->
+<main class="screen hidden" id="sName">
+  <h2>Enter your name</h2>
+  <div class="frame" id="namePreview" aria-hidden="true"></div>
+  <input id="nameInput" maxlength="10" autocomplete="off" spellcheck="false"
+         placeholder="PLAYER" aria-label="Your name">
+  <div class="row">
+    <button class="btn" id="nameOk" type="button">OK</button>
+    <button class="btn" id="nameBack" type="button">Back</button>
+  </div>
+  <p class="hint">Letters and numbers only</p>
+</main>
+
+<!-- 4. READY -->
+<main class="screen hidden" id="sReady">
+  <h2>Ready?</h2>
+  <div class="frame" id="readyPreview" aria-hidden="true"></div>
+  <p id="readyName"></p>
+  <div class="menu">
+    <button class="btn" id="beginBtn" type="button">Create mission</button>
+    <button class="btn" id="readyBack" type="button">Back</button>
+  </div>
+  <p class="hint dim" id="beginNote"></p>
+</main>
+
+<!-- 5. MISSION BRIEFING -->
+<main class="hidden" id="sScene" aria-label="Mission briefing" tabindex="-1">
+  <div class="stage" id="stage">
+    <div class="bg" id="sceneBg">
+      <span class="bgtag">NASA launch control room<br>(background goes here)</span>
+    </div>
+    <div class="actors">
+      <div class="actor" id="actPlayer"></div>
+      <div class="actor" id="actSci"></div>
+    </div>
+    <div class="dialog left" id="dialog" role="status" aria-live="polite">
+      <span class="tail"></span>
+      <div class="portrait" id="portrait"></div>
+      <div class="dtext">
+        <div class="dname" id="dname"></div>
+        <p id="dline"></p>
+        <div class="choices hidden" id="choices" role="listbox"
+             aria-label="What do you ask?"></div>
+      </div>
+      <span class="more blink" id="more">&#9660;</span>
+    </div>
+    <div class="countdown hidden" id="countdown" aria-live="assertive"></div>
+  </div>
+</main>
+
+<!-- 6. LIFTOFF: full-screen YouTube video -->
+<div id="launch" aria-hidden="true">
+  <div id="ytWrap"><div id="ytFrame"></div></div>
+  <div class="launch-ui hidden" id="launchUI">
+    <div class="launch-ctrl">
+      <button id="unmuteBtn" class="hidden" type="button">&#9835; Tap for sound</button>
+      <button id="skipBtn" type="button">Skip &#9654;&#9654;</button>
+    </div>
+    <p class="credit" id="credit"></p>
+    <p class="skip-hint">Esc to skip</p>
+  </div>
+  <p class="launch-msg hidden" id="launchMsg"></p>
+</div>
+
+<!-- 7. COCKPIT: interactive scene after the video -->
+<main class="hidden" id="sCockpit" aria-label="Spaceship cockpit" tabindex="-1">
+  <div class="cp-stage" id="cpStage">
+    <img class="cp-art" id="cpArt" alt="Spaceship cockpit with two crew members">
+    <div class="cp-hot" id="cpHot"></div>
+    <div class="cp-arrows" id="cpArrows"></div>
+    <div class="cp-bar">
+      <button id="cpHotBtn" type="button">Highlight (H)</button>
+    </div>
+    <div class="dialog holo hidden" id="holo" role="dialog"
+         aria-label="Hologram assistant" tabindex="-1">
+      <span class="tail"></span>
+      <div class="portrait" id="holoPortrait"></div>
+      <div class="dtext">
+        <div class="dname" id="holoName"></div>
+        <p id="holoLine"></p>
+        <div class="choices hidden" id="holoChoices" role="listbox"
+             aria-label="Ask the hologram"></div>
+      </div>
+    </div>
+    <p class="cp-toast hidden" id="cpToast" role="status"></p>
+    <div class="tab-wrap hidden" id="tabWrap">
+      <div class="tab" id="tab" role="dialog" aria-label="Outpost tablet" tabindex="-1">
+        <button class="tab-x" id="tabClose" type="button" aria-label="Close tablet">X</button>
+        <div class="tab-screen" id="tabScreen"></div>
+        <div class="tab-dock" id="tabDock"></div>
+      </div>
+    </div>
+    <div class="cp-panel hidden" id="cpPanel">
+      <section class="cp-win" role="dialog" aria-labelledby="cpTitle">
+        <header>
+          <h3 id="cpTitle"></h3>
+          <button id="cpClose" type="button" aria-label="Close">X</button>
+        </header>
+        <div id="cpBody"></div>
+      </section>
+    </div>
+  </div>
+</main>
+
+<!-- 8. ROOMS: outside, bedroom and rover (reached from the cockpit arrows) -->
+<main class="hidden" id="sRoom" aria-label="Room" tabindex="-1">
+  <div class="cp-stage" id="roomStage">
+    <img class="cp-art" id="roomArt" alt="">
+    <div class="cp-hot" id="roomHot"></div>
+    <div class="cp-arrows" id="roomArrows"></div>
+    <div class="cp-bar">
+      <p class="room-name" id="roomName"></p>
+      <button id="roomHotBtn" type="button">Highlight (H)</button>
+    </div>
+    <div class="research hidden" id="research">
+      <p class="res-info" id="resInfo"></p>
+      <button class="res-btn" id="resBtn" type="button"
+              aria-label="Hold to research (or hold the R key)">
+        <i class="res-fill" id="resFill"></i>
+        <span id="resLbl"></span>
+        <small id="resSub"></small>
+      </button>
+    </div>
+    <p class="cp-toast hidden" id="roomToast" role="status"></p>
+    <div class="cp-panel hidden" id="roomPanel">
+      <section class="cp-win" id="roomPanelWin" role="dialog"
+               aria-labelledby="roomPanelTitle" tabindex="-1">
+        <header>
+          <h3 id="roomPanelTitle"></h3>
+          <button id="roomPanelClose" type="button" aria-label="Close">X</button>
+        </header>
+        <div id="roomPanelBody"></div>
+      </section>
+    </div>
+    <div class="sleep-fade hidden" id="sleepFade" aria-live="polite">ZZZ...</div>
+  </div>
+</main>
+
+<!-- 9. DEATH: shown on top of everything when the crew is lost -->
+<div class="hidden" id="death" role="alertdialog" aria-label="Mission failed" tabindex="-1">
+  <div class="cp-stage death-stage">
+    <img class="cp-art" id="deathArt" alt="">
+    <div class="dialog death-echo hidden" id="deathEcho">
+      <span class="tail"></span>
+      <div class="portrait" id="deathPortrait"></div>
+      <div class="dtext">
+        <div class="dname" id="deathName"></div>
+        <p id="deathLine"></p>
+      </div>
+      <span class="more blink" id="deathMore">&#9660;</span>
+    </div>
+    <div class="death-fade hidden" id="deathFade">
+      <div class="death-box hidden" id="deathBox">
+        <h2>Mission failed</h2>
+        <p id="deathWhy"></p>
+        <p class="dim" id="deathStats"></p>
+        <button class="btn" id="deathAgain" type="button">Try again</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 10. THE ENDING: after GO HOME (below the death screen) -->
+<div class="hidden" id="ending" role="dialog" aria-label="Going home" tabindex="-1">
+  <img class="end-art" id="endArt" alt="">
+  <div class="actors hidden" id="endActors">
+    <div class="actor" id="endActP"></div>
+    <div class="actor" id="endActS"></div>
+  </div>
+  <div class="dialog left hidden" id="endDialog" role="status" aria-live="polite">
+    <span class="tail"></span>
+    <div class="portrait" id="endPortrait"></div>
+    <div class="dtext">
+      <div class="dname" id="endName"></div>
+      <p id="endLine"></p>
+    </div>
+    <span class="more blink" id="endMore">&#9660;</span>
+  </div>
+  <div class="end-report hidden" id="endReport">
+    <div class="clip" role="document" aria-label="Mission report">
+      <div class="clip-metal"><i></i></div>
+      <div class="paper">
+        <h2>Mission report</h2>
+        <p class="rname" id="reportName"></p>
+        <ul class="rrows" id="reportRows"></ul>
+        <div class="rg" id="reportGrade">
+          <small>FINAL GRADE</small>
+          <span class="letter" id="reportLetter"></span>
+          <small id="reportScore"></small>
+        </div>
+        <div class="rkey" id="reportKey" aria-hidden="true"></div>
+        <p class="rnote reveal"><b>DR. VEGA:</b> <span id="reportNote"></span></p>
+        <p class="rsrc reveal" id="reportSrc"></p>
+        <button class="btn" id="playAgain" type="button">Play again</button>
+      </div>
+    </div>
+  </div>
+  <div class="end-fade" id="endFade"></div>
+</div>
+
+<!-- load order matters: these share globals so it also works from file:// -->
+<script defer src="js/config.js"></script>
+<script defer src="js/core.js"></script>
+<script defer src="js/menu.js"></script>
+<script defer src="js/title.js"></script>
+<script defer src="js/scene.js"></script>
+<script defer src="js/launch.js"></script>
+<script defer src="js/cockpit-data.js"></script>
+<script defer src="js/cockpit.js"></script>
+<script defer src="js/tablet-data.js"></script>
+<script defer src="js/forecast.js"></script>
+<script defer src="js/tablet.js"></script>
+<script defer src="js/rooms.js"></script>
+<script defer src="js/death.js"></script>
+<script defer src="js/ending.js"></script>
+<script defer src="js/audio.js"></script>
+<script defer src="js/input.js"></script>
+<script defer src="js/main.js"></script>
+</body>
+</html>

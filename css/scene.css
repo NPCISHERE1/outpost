@@ -1,0 +1,198 @@
+/* SI DISCLOSURE: written with SI assistance (Anthropic Claude) and edited by the team. See AI-DISCLOSURE.md */
+/* Mission briefing: background, actors, dialogue box, countdown */
+#sScene {
+  --dlg-h: clamp(150px, 24vh, 168px);   /* dialogue box height */
+  position: fixed;
+  inset: 0;
+  background: #000;
+  z-index: 5;
+}
+.stage {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  animation: fade .7s steps(7);
+}
+
+/* background */
+.bg {
+  position: absolute;
+  inset: 0;
+  background: #141b2b left top / cover no-repeat;   /* top-left stays visible: the SI watermark */
+  image-rendering: pixelated;
+}
+.bg::after {              /* flat floor until you add art */
+  content: '';
+  position: absolute;
+  inset: auto 0 0;
+  height: 34%;
+  background: #0b0f1a;
+}
+.bg.has-img::after,
+.bg.has-img .bgtag { display: none; }
+.bg.has-img::before {     /* tint + vignette to match the dark retro UI */
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(rgba(6, 9, 18, .25), rgba(6, 9, 18, .6));
+  box-shadow: inset 0 0 140px rgba(0, 0, 0, .65);
+}
+.bgtag {
+  position: absolute;
+  top: 14%;
+  left: 0;
+  right: 0;
+  text-align: center;
+  color: #3a4766;
+  font-size: .8em;
+}
+
+/* actors: half a body stands on top of the text box, one at each end of the box.
+   --act-h is the full height of a sprite; only the top part shows, the box hides the rest. */
+.actors {
+  --act-h: min(clamp(190px, 44vh, 400px), 62vw);
+  --show: .58;                          /* how much of the body shows (0.5 = half) */
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(92vw, 800px);              /* same width as the text box */
+  bottom: calc(var(--dlg-h) + 18px - 2px);   /* sits right on the top edge of the box */
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  padding: 0 2.5%;
+  pointer-events: none;
+}
+.actor {
+  width: calc(var(--act-h) * 2 / 3);
+  height: calc(var(--act-h) * var(--show));
+  overflow: hidden;                     /* cuts the legs off */
+  transition: filter .2s;
+}
+.actor img {
+  display: block;
+  width: 100%;
+  height: var(--act-h);
+  object-fit: contain;
+  object-position: center top;          /* keep the head, lose the legs */
+}
+.actor .ph {
+  width: 100%;
+  height: var(--act-h);
+  border: 4px dashed #3a4766;
+  display: grid;
+  place-items: center;
+  color: #3a4766;
+  font-size: .7em;
+  text-align: center;
+  padding: 6px;
+}
+.actor.dim { filter: brightness(.45); }
+
+/* dialogue box: white rounded box with a tail */
+.dialog {
+  position: absolute;
+  left: 50%;
+  bottom: 18px;
+  transform: translateX(-50%);
+  width: min(92vw, 800px);
+  min-height: var(--dlg-h);
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 12px;
+  padding: 12px 16px 14px;
+  background: #fff;
+  color: #000;
+  border: 4px solid #000;
+  border-radius: 16px;
+  box-shadow: 0 0 0 4px rgba(255, 255, 255, .18);
+  text-transform: uppercase;
+  font-size: .8em;
+  line-height: 1.9;
+}
+.dialog .tail {
+  position: absolute;
+  top: -24px;
+  width: 0;
+  height: 0;
+  border-left: 14px solid transparent;
+  border-right: 14px solid transparent;
+  border-bottom: 22px solid #000;
+}
+.dialog .tail::after {
+  content: '';
+  position: absolute;
+  left: -9px;
+  top: 6px;
+  border-left: 9px solid transparent;
+  border-right: 9px solid transparent;
+  border-bottom: 15px solid #fff;
+}
+.dialog.left .tail { left: 9%; }       /* points up at the speaker */
+.dialog.right .tail { right: 9%; }
+
+.portrait {
+  width: clamp(48px, 9vw, 72px);
+  aspect-ratio: 1;
+  border: 4px solid #000;
+  background: #d9d9e6;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  color: #777;
+  font-size: 1.4em;
+  align-self: start;
+}
+.portrait img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+}
+.dname { font-size: .85em; color: #6b2fd0; margin-bottom: 4px; }
+.dtext p { min-height: 3.8em; }
+.more { position: absolute; right: 16px; bottom: 6px; font-size: .9em; }
+
+/* choices */
+.choices {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  font-size: .9em;
+}
+.choices button {
+  font: inherit;
+  text-transform: uppercase;
+  text-align: left;
+  background: none;
+  border: 0;
+  color: #000;
+  padding: 1px 6px;
+  cursor: pointer;
+  line-height: 1.35;
+}
+.choices button::before { content: '\00a0\00a0'; }
+.choices button.cur,
+.choices button:hover { color: #6b2fd0; outline: none; }
+.choices button.cur::before,
+.choices button:hover::before { content: '>\00a0'; }
+.choices button.done { color: #7a7a7a; }
+.choices button.go { margin-top: 2px; }
+
+/* countdown on a solid black screen */
+.countdown {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: #000;
+  color: var(--hi);
+  font-size: clamp(28px, 9vw, 72px);
+  text-shadow: 4px 4px 0 var(--shadow);
+  text-align: center;
+  white-space: pre-line;
+  line-height: 1.6;
+  z-index: 4;
+  animation: fade .35s steps(6);
+}

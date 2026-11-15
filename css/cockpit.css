@@ -1,0 +1,260 @@
+/* SI DISCLOSURE: written with SI assistance (Anthropic Claude) and edited by the team. See AI-DISCLOSURE.md */
+/* Cockpit scene: hotspots, holo bubble, data panels */
+#sCockpit {
+  --dlg-h: clamp(150px, 24vh, 168px);
+  position: fixed;
+  inset: 0;
+  z-index: 5;
+  background: #000;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+.cp-stage {
+  position: relative;
+  width: min(100vw, 177.78vh);
+  aspect-ratio: 16 / 9;
+  background: #1b1040;
+  overflow: hidden;
+  container-type: inline-size;   /* lets the tablet scale with the stage */
+  animation: fade .7s steps(7);
+}
+.cp-art {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.cp-hot { position: absolute; inset: 0; }
+
+/* hotspots: invisible, so the art stays untouched until you hover */
+.hot {
+  position: absolute;
+  font: inherit;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+.hot.round { border-radius: 50%; }
+.hot:hover,
+.hot:focus-visible,
+.show-hot .hot {
+  background: rgba(255, 216, 0, .12);
+  outline: 3px solid var(--hi);
+  outline-offset: -3px;
+}
+.show-hot .hot:not(:hover):not(:focus-visible) {
+  outline-style: dashed;
+  background: rgba(255, 216, 0, .06);
+}
+.hot::after {
+  content: attr(data-label);
+  position: absolute;
+  left: 50%;
+  bottom: 100%;
+  transform: translateX(-50%);
+  margin-bottom: 4px;
+  white-space: nowrap;
+  font-size: .6em;
+  color: var(--hi);
+  background: #000;
+  border: 2px solid var(--hi);
+  padding: 3px 8px;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 2;
+}
+.hot.below::after { bottom: auto; top: 100%; margin: 4px 0 0; }
+.hot:hover::after,
+.hot:focus-visible::after,
+.show-hot .hot::after { opacity: 1; }
+
+/* top-center buttons */
+.cp-bar {
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+  z-index: 4;
+}
+.cp-bar button {
+  font: inherit;
+  font-size: .5em;
+  color: #fff;
+  background: rgba(0, 0, 0, .6);
+  border: 3px solid #fff;
+  padding: 6px 10px;
+  cursor: pointer;
+  text-transform: uppercase;
+}
+.cp-bar button:hover,
+.cp-bar button:focus-visible { color: var(--hi); border-color: var(--hi); outline: none; }
+
+/* hologram bubble: reuses the .dialog look, tail points at the hologram */
+.holo.dialog {
+  left: 22%;
+  bottom: 4%;
+  transform: none;
+  width: min(72%, 620px);
+  min-height: 0;
+  z-index: 5;
+}
+.holo:focus { outline: none; }
+.holo.dialog .tail {
+  top: auto;
+  bottom: 22%;
+  left: -26px;
+  border: 0;
+  border-top: 14px solid transparent;
+  border-bottom: 14px solid transparent;
+  border-right: 22px solid #000;
+}
+.holo.dialog .tail::after {
+  left: 6px;
+  top: -9px;
+  border: 0;
+  border-top: 9px solid transparent;
+  border-bottom: 9px solid transparent;
+  border-right: 15px solid #fff;
+}
+.holo .portrait {
+  background-color: #1a0f3a;
+  background-repeat: no-repeat;
+  image-rendering: pixelated;
+}
+.holo .dtext p { min-height: 3.8em; }
+
+/* toast */
+.cp-toast {
+  position: absolute;
+  top: 8%;
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: 70%;
+  z-index: 6;
+  background: #fff;
+  color: #000;
+  border: 4px solid #000;
+  border-radius: 12px;
+  padding: 10px 16px;
+  font-size: .7em;
+  text-align: center;
+  line-height: 1.8;
+}
+
+/* data panels */
+.cp-panel {
+  position: absolute;
+  inset: 0;
+  z-index: 7;
+  display: grid;
+  place-items: center;
+  background: rgba(5, 2, 15, .55);
+}
+.cp-win {
+  width: min(88%, 520px);
+  max-height: 88%;
+  overflow: auto;
+  background: #0d0820;
+  color: #e8e0ff;
+  border: 4px solid #b85cff;
+  box-shadow: 0 0 0 4px #000, 0 0 0 8px #4de8ff;
+  font-size: .7em;
+  line-height: 1.8;
+}
+.cp-win header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #3a1d6e;
+  padding: 6px 12px;
+}
+.cp-win h3 { margin: 0; font-weight: 400; font-size: 1em; color: #4de8ff; }
+.cp-win header button {
+  font: inherit;
+  color: #fff;
+  background: none;
+  border: 3px solid #fff;
+  padding: 0 8px;
+  cursor: pointer;
+}
+.cp-win header button:hover,
+.cp-win header button:focus-visible { color: var(--hi); border-color: var(--hi); outline: none; }
+#cpBody { padding: 12px 16px 16px; }
+
+.kv { display: flex; justify-content: space-between; gap: 12px; }
+.kv b { font-weight: 400; color: #fff; }
+.u { text-transform: none; }
+.note { font-size: .85em; color: #a99bd6; margin-top: 8px; }
+.fc { margin-bottom: 10px; }
+.fc small { color: #a99bd6; }
+
+.bar {
+  height: .9em;
+  background: #1b1240;
+  border: 2px solid #6d4bb5;
+  margin: 2px 0 10px;
+}
+.bar i { display: block; height: 100%; background: #4de8ff; }
+.bar.ok i { background: #52f08c; }
+.bar.warn i { background: var(--hi); }
+.bar.orange i { background: #ff9020; }
+.bar.bad i { background: #ff4d6d; }
+
+.badge {
+  display: inline-block;
+  padding: 0 10px;
+  margin-bottom: 8px;
+  border: 3px solid currentColor;
+  text-transform: uppercase;
+}
+.ok { color: #52f08c; }
+.warn { color: var(--hi); }
+.orange { color: #ff9020; }
+.bad { color: #ff4d6d; }
+.bar.ok, .bar.warn, .bar.orange, .bar.bad { color: inherit; }
+
+.big { font-size: 2.2em; line-height: 1.4; }
+.big small { font-size: .35em; color: #a99bd6; }
+.spark {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 3.2em;
+  margin-bottom: 10px;
+  border-bottom: 2px solid #6d4bb5;
+}
+.spark i { flex: 1; background: #4de8ff; }
+
+.msgs { margin: 0 0 8px; padding-left: 1.2em; }
+.chk,
+.go {
+  display: block;
+  width: 100%;
+  font: inherit;
+  text-align: left;
+  color: #e8e0ff;
+  background: none;
+  border: 0;
+  padding: 2px 0;
+  cursor: pointer;
+  text-transform: uppercase;
+}
+.chk:hover,
+.chk:focus-visible { color: var(--hi); outline: none; }
+.chk[aria-pressed=true] { color: #52f08c; }
+.chk i { font-style: normal; }
+.go {
+  margin-top: 8px;
+  text-align: center;
+  color: #000;
+  background: var(--hi);
+  border: 3px solid #000;
+  padding: 8px;
+}
+.go:hover,
+.go:focus-visible { background: #fff; outline: none; }

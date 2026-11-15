@@ -1,0 +1,190 @@
+/* SI DISCLOSURE: written with SI assistance (Anthropic Claude) and edited by the team. See AI-DISCLOSURE.md */
+/* Arrow signs and the extra rooms (outside, bedroom) */
+#sRoom {
+  position: fixed;
+  inset: 0;
+  z-index: 5;
+  background: #000;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+#sRoom:focus,
+#sCockpit:focus { outline: none; }
+
+.room-name {
+  margin: 0;
+  font-size: .5em;
+  color: #fff;
+  background: rgba(0, 0, 0, .6);
+  border: 3px solid #fff;
+  padding: 6px 14px;
+  text-transform: uppercase;
+}
+
+/* arrow signs: bottom corners, drawn in pixels */
+.cp-arrows {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;           /* only the arrows themselves are clickable */
+}
+.arrow {
+  position: absolute;
+  bottom: 2.2%;
+  width: 6.4cqw;
+  aspect-ratio: 13 / 11;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  cursor: pointer;
+  pointer-events: auto;
+  filter: drop-shadow(0 .4cqw 0 rgba(0, 0, 0, .5));
+}
+.arrow.left { left: 1.6%; }
+.arrow.right { right: 1.6%; }
+.arrow svg { display: block; width: 100%; height: 100%; }
+.arrow .ol { fill: #0d0820; }
+.arrow .fl { fill: var(--hi); }
+.arrow:hover .fl,
+.arrow:focus-visible .fl { fill: #fff; }
+.arrow:focus-visible { outline: 3px dashed var(--hi); outline-offset: 4px; }
+
+/* a small nudge so people notice them */
+.arrow.left svg { animation: nudge-l 1s steps(2) infinite; }
+.arrow.right svg { animation: nudge-r 1s steps(2) infinite; }
+@keyframes nudge-l { 50% { transform: translateX(-8%); } }
+@keyframes nudge-r { 50% { transform: translateX(8%); } }
+
+/* label on hover, like the other hotspots */
+.arrow::after {
+  content: attr(data-label);
+  position: absolute;
+  bottom: 100%;
+  margin-bottom: 6px;
+  white-space: nowrap;
+  font-size: .6em;
+  color: var(--hi);
+  background: #000;
+  border: 2px solid var(--hi);
+  padding: 3px 8px;
+  opacity: 0;
+  pointer-events: none;
+}
+.arrow.left::after { left: 0; }
+.arrow.right::after { right: 0; }
+.arrow:hover::after,
+.arrow:focus-visible::after { opacity: 1; }
+
+/* black screen while the night passes */
+.sleep-fade {
+  position: absolute;
+  inset: 0;
+  z-index: 9;
+  display: grid;
+  place-items: center;
+  background: #000;
+  color: var(--hi);
+  font-size: min(3cqw, 28px);
+  text-shadow: 4px 4px 0 var(--shadow);
+  animation: fade .5s steps(5);
+}
+
+/* panels inside the rooms reuse the cockpit panel look */
+#roomPanelBody { padding: 12px 16px 16px; }
+#roomPanelWin:focus { outline: none; }
+
+/* greenhouse keypad */
+.kp-disp {
+  font-size: 2em;
+  text-align: center;
+  color: #4de8ff;
+  background: #000;
+  border: .15em solid #6d4bb5;
+  padding: .3em 0;
+  margin-bottom: .4em;
+  letter-spacing: .1em;
+}
+.kp-disp.ok { color: #52f08c; border-color: #52f08c; }
+.kp-disp.bad { color: #ff4d6d; border-color: #ff4d6d; animation: shake .4s steps(4); }
+.kp-msg { min-height: 1.8em; text-align: center; margin-bottom: .6em; }
+.kp-keys { display: grid; grid-template-columns: repeat(3, 1fr); gap: .5em; }
+.kp-keys button,
+.kp-hintbtn {
+  font: inherit;
+  color: #fff;
+  background: #3a1d6e;
+  border: .2em solid #b85cff;
+  padding: .6em 0;
+  cursor: pointer;
+  text-transform: uppercase;
+}
+.kp-keys button { font-size: 1.2em; }
+.kp-keys .okkey { background: #1f6b3a; border-color: #52f08c; }
+.kp-keys button:hover,
+.kp-keys button:focus-visible,
+.kp-hintbtn:hover,
+.kp-hintbtn:focus-visible { color: var(--hi); border-color: var(--hi); outline: none; }
+.kp-hintbtn {
+  display: block;
+  width: 100%;
+  margin-top: .8em;
+  font-size: .85em;
+  background: none;
+  border-color: #6d4bb5;
+}
+@keyframes shake { 25% { transform: translateX(-4%); } 75% { transform: translateX(4%); } }
+
+/* Research button (rover scene): hold it until the bar fills */
+.research {
+  position: absolute;
+  left: 50%;
+  bottom: 3%;
+  transform: translateX(-50%);
+  z-index: 4;
+  width: 27%;
+  min-width: 15em;
+  font-size: 11px;
+  font-size: min(1.2cqw, 13px);
+  text-align: center;
+}
+.res-info {
+  margin: 0 0 .6em;
+  padding: .5em .8em;
+  font-size: .85em;
+  line-height: 1.7;
+  background: rgba(0, 0, 0, .7);
+  border: .2em solid #6d4bb5;
+}
+.res-btn {
+  position: relative;
+  overflow: hidden;
+  display: block;
+  width: 100%;
+  font: inherit;
+  color: #000;
+  background: #bfeaff;
+  border: .25em solid #5c7d96;
+  border-radius: .4em;
+  box-shadow: inset -.2em -.2em 0 #8fb7cf, 0 .4em 0 rgba(0, 0, 0, .5);
+  padding: .8em 1em;
+  cursor: pointer;
+  text-transform: uppercase;
+  touch-action: none;                 /* holding must not scroll or zoom on phones */
+  -webkit-user-select: none;
+  user-select: none;
+}
+.res-btn:focus-visible { outline: 3px dashed var(--hi); outline-offset: 4px; }
+.res-fill {                            /* the progress bar */
+  position: absolute;
+  inset: 0;
+  transform-origin: left;
+  transform: scaleX(var(--p, 0));
+  background: #ffd84a;
+}
+.res-btn span,
+.res-btn small { position: relative; display: block; }
+.res-btn small { margin-top: .3em; font-size: .7em; color: #2c4a5e; }
+.res-btn.off { opacity: .6; }
+.res-btn.hold { background: #fff; }

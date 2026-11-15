@@ -1,0 +1,101 @@
+/* SI DISCLOSURE: written with SI assistance (Anthropic Claude) and edited by the team. See AI-DISCLOSURE.md */
+/* Title, character select, name entry, ready screen */
+
+/* buttons: plain text with a > cursor */
+.btn {
+  font: inherit;
+  color: var(--fg);
+  background: none;
+  border: 0;
+  cursor: pointer;
+  padding: 8px 16px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+.btn::before { content: '\00a0\00a0'; }
+.btn:hover,
+.btn:focus-visible { color: var(--hi); outline: none; }
+.btn:hover::before,
+.btn:focus-visible::before { content: '>\00a0'; }
+.btn:disabled { color: var(--dim); cursor: not-allowed; }
+
+.menu {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+.row {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+/* character frames: chunky pixel border */
+.chars {
+  display: flex;
+  gap: clamp(20px, 6vw, 56px);
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.char {
+  font: inherit;
+  color: var(--fg);
+  background: none;
+  border: 0;
+  cursor: pointer;
+  text-transform: uppercase;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 0;
+}
+.char:focus-visible { outline: none; }
+
+.frame {
+  width: clamp(110px, 26vw, 180px);
+  aspect-ratio: 2 / 3;
+  padding: 10px;
+  display: grid;
+  place-items: center;
+  background: #000;
+  box-shadow: 0 0 0 4px #000, 0 0 0 8px var(--fg);
+  color: var(--dim);
+  font-size: .75em;
+}
+.frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center bottom;
+}
+.char:hover .frame,
+.char:focus-visible .frame,
+.char[aria-checked=true] .frame {
+  box-shadow: 0 0 0 4px #000, 0 0 0 8px var(--hi);
+}
+.char:hover .lbl,
+.char:focus-visible .lbl,
+.char[aria-checked=true] .lbl { color: var(--hi); }
+.char:focus-visible .lbl::before,
+.char[aria-checked=true] .lbl::before { content: '> '; }
+
+/* name entry */
+#nameInput {
+  font: inherit;
+  font-size: 1.2em;
+  text-transform: uppercase;
+  text-align: center;
+  color: var(--hi);
+  background: #000;
+  border: 0;
+  border-bottom: 4px solid var(--fg);
+  border-radius: 0;
+  width: min(80vw, 22ch);
+  padding: 8px 4px;
+  caret-color: var(--hi);
+}
+#nameInput:focus { outline: none; border-bottom-color: var(--hi); }
+#nameInput::placeholder { color: var(--dim); }
